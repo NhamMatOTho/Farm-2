@@ -12,6 +12,11 @@ public static class Settings
     //Tilemap
     public const float gridCellSize = 1f;
     public static Vector2 cursorSize = Vector2.one;
+
+    //Player
+    public static float playerCentreYOffset = 0.875f;
+
+    //Use Tool
     public static float useToolAnimationPause = 0.25f;
     public static float liftToolAnimationPause = 0.4f;
     public static float afterUseToolAnimationPause = 0.2f;
@@ -60,6 +65,10 @@ public static class Settings
     public const string ReapingTool = "Scythe";
     public const string WateringTool = "Watering Cab";
     public const string CollectingTool = "Basket";
+
+    //reaping
+    public const int maxCollidersToTestPerReapSwing = 15;
+    public const int maxTargerComponentsToDestroyPerReapSwing = 2;
 
     //Time system
     public const float secondsPerGameSecond = 0.012f;
