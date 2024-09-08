@@ -102,6 +102,16 @@ public enum ToolEffect
     watering
 }
 
+public enum HarvestActionEffect
+{
+    deciduousLeavesFalling,
+    pineConesFalling,
+    choppingTreeTrunk,
+    breakingStone,
+    reaping,
+    none
+}
+
 public enum Direction
 {
     up,

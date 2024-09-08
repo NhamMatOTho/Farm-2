@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public delegate void MovementDelegate(float inputX, float inputY, bool isWalking, bool isRunning, bool isIdle, bool isCarrying,
     ToolEffect toolEffect, bool isUsingToolRight, bool isUsingToolLeft, bool isUsingToolUp, bool isUsingToolDown,
@@ -17,6 +18,17 @@ public static class EventHandler
     {
         if (DropSelectedItemEvent != null)
             DropSelectedItemEvent();
+    }
+
+    //harvest action event
+    public static event Action<Vector3, HarvestActionEffect> HarvestActionEffectEvent;
+
+    public static void CallHarvestActionEffectEvent(Vector3 effectPosition, HarvestActionEffect harvestActionEffect)
+    {
+        if(HarvestActionEffectEvent != null)
+        {
+            HarvestActionEffectEvent(effectPosition, harvestActionEffect);
+        }
     }
 
     //inven updated evt

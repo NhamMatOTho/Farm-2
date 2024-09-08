@@ -446,7 +446,11 @@ public class Player : SingletonMonobehavior<Player>
                 {
                     if (InventoryManager.Instance.GetItemDetails(itemArray[i].ItemCode).itemType == ItemType.Reapable_scenary)
                     {
+                        //effect position
                         Vector3 effectPosition = new Vector3(itemArray[i].transform.position.x, itemArray[i].transform.position.y + Settings.gridCellSize / 2f, itemArray[i].transform.position.z);
+
+                        //trigger reaping
+                        EventHandler.CallHarvestActionEffectEvent(effectPosition, HarvestActionEffect.reaping);
 
                         Destroy(itemArray[i].gameObject);
 
@@ -601,6 +605,7 @@ public class Player : SingletonMonobehavior<Player>
         //test scene load/unload
         if (Input.GetKey(KeyCode.L))
             SceneControllerManager.Instance.FadeAndLoadScene(SceneName.Scene1_Farm.ToString(), transform.position);
+
     }
 
 }
