@@ -15,6 +15,8 @@ public class Player : SingletonMonobehavior<Player>
     private WaitForSeconds afterLiftToolAnimationPause;
     private WaitForSeconds useToolAnimationPause;
     private WaitForSeconds liftToolAnimationPause;
+    private WaitForSeconds pickAnimationPause;
+    private WaitForSeconds afterPickAnimationPause;
     private bool playerToolUseDisable = false;
 
     //movement parameter
@@ -101,6 +103,8 @@ public class Player : SingletonMonobehavior<Player>
         liftToolAnimationPause = new WaitForSeconds(Settings.liftToolAnimationPause);
         afterUseToolAnimationPause = new WaitForSeconds(Settings.afterUseToolAnimationPause);
         afterLiftToolAnimationPause = new WaitForSeconds(Settings.afterLiftToolAnimationPause);
+        pickAnimationPause = new WaitForSeconds(Settings.pickAnimationPause);
+        afterPickAnimationPause = new WaitForSeconds(Settings.afterPickAnimationPause);
     }
 
     private void Update()
@@ -195,7 +199,7 @@ public class Player : SingletonMonobehavior<Player>
                 case ItemType.Seed:
                     if (Input.GetMouseButtonDown(0))
                     {
-                        ProcessPlayerClickInputSeed(itemDetails);
+                        ProcessPlayerClickInputSeed(gridPropertyDetails, itemDetails);
                     }
                     break;
                 case ItemType.Commodity:
@@ -207,6 +211,7 @@ public class Player : SingletonMonobehavior<Player>
                 case ItemType.Hoeing_tool:
                 case ItemType.Watering_tool:
                 case ItemType.Reaping_tool:
+                case ItemType.Collecting_tool:
                     ProcessPlayerClickInputTool(gridPropertyDetails, itemDetails, playerDirection);
                     break;
                 case ItemType.none:
@@ -267,12 +272,26 @@ public class Player : SingletonMonobehavior<Player>
         }
     }
 
-    private void ProcessPlayerClickInputSeed(ItemDetails itemDetails)
+    private void ProcessPlayerClickInputSeed(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails)
     {
-        if(itemDetails.canBeDropped && gridCursor.CursorPositionIsValid)
+        if(itemDetails.canBeDropped && gridCursor.CursorPositionIsValid && gridPropertyDetails.daysSinceDug > -1 && gridPropertyDetails.seedItemCode == -1)
+        {
+            PlantSeedAtCursor(gridPropertyDetails, itemDetails);
+        }
+        else if(itemDetails.canBeDropped && gridCursor.CursorPositionIsValid)
         {
             EventHandler.CallDropSelectedItemEvent();
         }
+    }
+
+    private void PlantSeedAtCursor(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails)
+    {
+        gridPropertyDetails.seedItemCode = itemDetails.ItemCode;
+        gridPropertyDetails.growthDays = 0;
+
+        GridPropertiesManager.Instance.DisplayPlantedCrop(gridPropertyDetails);
+
+        EventHandler.CallRemoveSelectedItemFromInventoryEvent();
     }
     private void ProcessPlayerClickInputTool(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails, Vector3Int playerDirection)
     {
@@ -300,10 +319,19 @@ public class Player : SingletonMonobehavior<Player>
                 }
                 break;
 
+            case ItemType.Collecting_tool:
+                if (gridCursor.CursorPositionIsValid)
+                {
+                    CollectInPlayerDirection(gridPropertyDetails, itemDetails, playerDirection);
+                }
+                break;
+
             default:
                 break;
         }
     }
+
+
 
     private void HoeGroundAtCursor(GridPropertyDetails gridPropertyDetails, Vector3Int playerDirection)
     {
@@ -387,6 +415,58 @@ public class Player : SingletonMonobehavior<Player>
 
         PlayerInputIsDisabled = false;
         playerToolUseDisable = false;
+    }
+
+    private void CollectInPlayerDirection(GridPropertyDetails gridPropertyDetails, ItemDetails equippedItemDetails, Vector3Int playerDirection)
+    {
+        StartCoroutine(CollectInPlayerDirectionRoutine(gridPropertyDetails, equippedItemDetails, playerDirection));
+    }
+
+    private IEnumerator CollectInPlayerDirectionRoutine(GridPropertyDetails gridPropertyDetails, ItemDetails equippedItemDetails, Vector3Int playerDirection)
+    {
+        PlayerInputIsDisabled = true;
+        playerToolUseDisable = true;
+
+        ProcessCropWithEquippedItemInPlayerDirection(playerDirection, equippedItemDetails, gridPropertyDetails);
+
+        yield return pickAnimationPause;
+
+        yield return afterPickAnimationPause;
+
+        PlayerInputIsDisabled = false;
+        playerToolUseDisable = false;
+    }
+
+    private void ProcessCropWithEquippedItemInPlayerDirection(Vector3Int playerDirection, ItemDetails equippedItemDetails, GridPropertyDetails gridPropertyDetails)
+    {
+        switch (equippedItemDetails.itemType)
+        {
+            case ItemType.Collecting_tool:
+                if (playerDirection == Vector3Int.right)
+                    isPickingRight = true;
+                else if (playerDirection == Vector3Int.left)
+                    isPickingLeft = true;
+                else if (playerDirection == Vector3Int.down)
+                    isPickingDown = true;
+                else if (playerDirection == Vector3Int.up)
+                    isPickingUp = true;
+                break;
+
+            case ItemType.none:
+                break;
+        }
+
+        Crop crop = GridPropertiesManager.Instance.GetCropObjectAtGridLocation(gridPropertyDetails);
+
+        if(crop != null)
+        {
+            switch (equippedItemDetails.itemType)
+            {
+                case ItemType.Collecting_tool:
+                    crop.ProcessToolAction(equippedItemDetails);
+                    break;
+            }
+        }
     }
 
     private void ReapInPlayerDirectionAtCursor(ItemDetails itemDetails, Vector3Int playerDirection)

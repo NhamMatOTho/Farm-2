@@ -7,10 +7,12 @@ using UnityEngine.Tilemaps;
 [RequireComponent(typeof(GenerateGUID))]
 public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager>, ISaveable
 {
+    private Transform cropsParentTransform;
     private Tilemap groundDecoration1;
     private Tilemap groundDecoration2;
     private Grid grid;
     private Dictionary<string, GridPropertyDetails> gridPropertyDictionary;
+    [SerializeField] private SO_CropDetailsList so_CropDetailsList = null;
     [SerializeField] private SO_GridProperties[] so_gridPropertiesArray = null;
     [SerializeField] private Tile[] dugGround = null;
     [SerializeField] private Tile[] wateredGround = null;
@@ -59,6 +61,19 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
     private void ClearDisplayGridPropertyDetails()
     {
         ClearDisplayGroundDecorations();
+
+        ClearDisplayAllPlantedCrops();
+    }
+
+    private void ClearDisplayAllPlantedCrops()
+    {
+        Crop[] cropArray;
+        cropArray = FindObjectsOfType<Crop>();
+
+        foreach(Crop crop in cropArray)
+        {
+            Destroy(crop.gameObject);
+        }
     }
 
     public void DisplayDugGround(GridPropertyDetails gridPropertyDetails)
@@ -337,6 +352,42 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
             GridPropertyDetails gridPropertyDetails = item.Value;
             DisplayDugGround(gridPropertyDetails);
             DisplayWateredGround(gridPropertyDetails);
+            DisplayPlantedCrop(gridPropertyDetails);
+        }
+    }
+
+    public void DisplayPlantedCrop(GridPropertyDetails gridPropertyDetails)
+    {
+        if(gridPropertyDetails.seedItemCode > -1)
+        {
+            CropDetails cropDetails = so_CropDetailsList.GetCropDetails(gridPropertyDetails.seedItemCode);
+
+            GameObject cropPrefab;
+
+            int growthStages = cropDetails.growthDays.Length;
+            int currentGrowthStage = 0;
+            int daysCounter = cropDetails.totalGrowthDays;
+
+            for (int i = growthStages - 1; i >= 0; i--)
+            {
+                if(gridPropertyDetails.growthDays >= daysCounter)
+                {
+                    currentGrowthStage = i;
+                    break;
+                }
+                daysCounter = daysCounter - cropDetails.growthDays[i];
+            }
+
+            cropPrefab = cropDetails.growthPrefab[currentGrowthStage];
+            Sprite growthSprite = cropDetails.growthSprite[currentGrowthStage];
+
+            Vector3 worldPosition = groundDecoration2.CellToWorld(new Vector3Int(gridPropertyDetails.gridX, gridPropertyDetails.gridY, 0));
+            worldPosition = new Vector3(worldPosition.x + Settings.gridCellSize / 2, worldPosition.y, worldPosition.z);
+
+            GameObject cropInstance = Instantiate(cropPrefab, worldPosition, Quaternion.identity);
+            cropInstance.GetComponentInChildren<SpriteRenderer>().sprite = growthSprite;
+            cropInstance.transform.SetParent(cropsParentTransform);
+            cropInstance.GetComponent<Crop>().cropGridPosition = new Vector2Int(gridPropertyDetails.gridX, gridPropertyDetails.gridY);
         }
     }
 
@@ -393,6 +444,15 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
 
     private void AfterSceneLoaded()
     {
+        if(GameObject.FindGameObjectWithTag(Tags.CropsParentTransform) != null)
+        {
+            cropsParentTransform = GameObject.FindGameObjectWithTag(Tags.CropsParentTransform).transform;
+        }
+        else
+        {
+            cropsParentTransform = null;
+        }
+
         grid = GameObject.FindObjectOfType<Grid>();
 
         groundDecoration1 = GameObject.FindGameObjectWithTag(Tags.GroundDecoration1).GetComponent<Tilemap>();
@@ -430,6 +490,30 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
         gridPropertyDetails.gridX = gridX;
         gridPropertyDetails.gridY = gridY;
         gridPropertyDictionary[key] = gridPropertyDetails;
+    }
+
+    public Crop GetCropObjectAtGridLocation(GridPropertyDetails gridPropertyDetails)
+    {
+        Vector3 worldPosition = grid.GetCellCenterWorld(new Vector3Int(gridPropertyDetails.gridX, gridPropertyDetails.gridY, 0));
+        Collider2D[] collider2DArray = Physics2D.OverlapPointAll(worldPosition);
+
+        Crop crop = null;
+
+        for (int i = 0; i < collider2DArray.Length; i++)
+        {
+            crop = collider2DArray[i].gameObject.GetComponentInParent<Crop>();
+            if (crop != null && crop.cropGridPosition == new Vector2Int(gridPropertyDetails.gridX, gridPropertyDetails.gridY))
+                break;
+            crop = collider2DArray[i].gameObject.GetComponentInChildren<Crop>();
+            if (crop != null && crop.cropGridPosition == new Vector2Int(gridPropertyDetails.gridX, gridPropertyDetails.gridY))
+                break;
+        }
+        return crop;
+    }
+
+    public CropDetails GetCropDetails(int seedItemCode)
+    {
+        return so_CropDetailsList.GetCropDetails(seedItemCode);
     }
 
     public void ISaveableRegister()
@@ -484,6 +568,9 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
                         GridPropertyDetails gridPropertyDetails = item.Value;
 
                         #region Update all grid properties to reflect the advance in the day
+                        if (gridPropertyDetails.growthDays > -1)
+                            gridPropertyDetails.growthDays += 1;
+                        
                         if (gridPropertyDetails.daysSinceWatered > -1)
                             gridPropertyDetails.daysSinceWatered = -1;
 

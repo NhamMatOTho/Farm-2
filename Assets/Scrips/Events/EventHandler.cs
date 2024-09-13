@@ -12,12 +12,23 @@ public delegate void MovementDelegate(float inputX, float inputY, bool isWalking
 public static class EventHandler
 {
     //drop selected item event
-    public static Action DropSelectedItemEvent;
+    public static event Action DropSelectedItemEvent;
 
     public static void CallDropSelectedItemEvent()
     {
         if (DropSelectedItemEvent != null)
             DropSelectedItemEvent();
+    }
+
+    //remove selected item from inven
+    public static event Action RemoveSelectedItemFromInventoryEvent;
+
+    public static void CallRemoveSelectedItemFromInventoryEvent()
+    {
+        if(RemoveSelectedItemFromInventoryEvent != null)
+        {
+            RemoveSelectedItemFromInventoryEvent();
+        }
     }
 
     //harvest action event

@@ -12,6 +12,7 @@ public class GridCursor : MonoBehaviour
     [SerializeField] private RectTransform cursorRectTranform = null;
     [SerializeField] private Sprite greenCursorSprite = null;
     [SerializeField] private Sprite redCursorSprite = null;
+    [SerializeField] private SO_CropDetailsList so_CropDetailsList = null;
 
     private bool _cursorPositionIsValid = false;
     public bool CursorPositionIsValid { get => _cursorPositionIsValid; set => _cursorPositionIsValid = value; }
@@ -197,6 +198,29 @@ public class GridCursor : MonoBehaviour
                     return true;
                 else
                     return false;
+
+            case ItemType.Collecting_tool:
+                if(gridPropertyDetails.seedItemCode != -1)
+                {
+                    CropDetails cropDetails = so_CropDetailsList.GetCropDetails(gridPropertyDetails.seedItemCode);
+
+                    if(cropDetails != null)
+                    {
+                        if(gridPropertyDetails.growthDays >= cropDetails.totalGrowthDays)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                return false;
 
             default:
                 return false;
