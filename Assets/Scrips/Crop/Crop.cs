@@ -6,10 +6,13 @@ public class Crop : MonoBehaviour
 {
     private int harvestActionCount = 0;
 
+    [Tooltip("This should be populated from child gameobject")]
+    [SerializeField] private SpriteRenderer cropHarvestedSpriteRenderer = null;
+
     [HideInInspector]
     public Vector2Int cropGridPosition;
 
-    public void ProcessToolAction(ItemDetails equippedItemDetails)
+    public void ProcessToolAction(ItemDetails equippedItemDetails, bool isToolRight, bool isToolLeft, bool isToolUp, bool isToolDown)
     {
         GridPropertyDetails gridPropertyDetails = GridPropertiesManager.Instance.GetGridPropertyDetails(cropGridPosition.x, cropGridPosition.y);
 
@@ -24,6 +27,19 @@ public class Crop : MonoBehaviour
         if (cropDetails == null)
             return;
 
+        Animator animator = GetComponentInChildren<Animator>();
+
+        if(animator != null)
+        {
+            if(isToolRight || isToolUp)
+            {
+                animator.SetTrigger("usetoolright");
+            }
+            else if(isToolLeft || isToolDown)
+            {
+                animator.SetTrigger("usetoolleft");
+            }
+        }
 
         int requiredHarvestActions = cropDetails.RequiredHarvestActionsForTool(equippedItemDetails.ItemCode);
         if (requiredHarvestActions == -1)
@@ -32,17 +48,61 @@ public class Crop : MonoBehaviour
         harvestActionCount += 1;
 
         if (harvestActionCount >= requiredHarvestActions)
-            HarvestCrop(cropDetails, gridPropertyDetails);
+            HarvestCrop(isToolRight, isToolUp, cropDetails, gridPropertyDetails, animator);
     }
 
-    private void HarvestCrop(CropDetails cropDetails, GridPropertyDetails gridPropertyDetails)
+    private void HarvestCrop(bool isUsingToolRight, bool isUsingToolUp, CropDetails cropDetails, GridPropertyDetails gridPropertyDetails, Animator animator)
     {
+        if(cropDetails.isHarvestedAnimation && animator != null)
+        {
+            if(cropDetails.harvestedSprite != null)
+            {
+                if(cropHarvestedSpriteRenderer != null)
+                {
+                    cropHarvestedSpriteRenderer.sprite = cropDetails.harvestedSprite;
+                }
+            }
+
+            if(isUsingToolRight || isUsingToolUp)
+            {
+                animator.SetTrigger("harvestright");
+            }
+            else
+            {
+                animator.SetTrigger("harvestleft");
+            }
+        }
+
+
+        //delete crop
         gridPropertyDetails.seedItemCode = -1;
         gridPropertyDetails.growthDays = -1;
         gridPropertyDetails.daysSinceLastHarvest = -1;
         gridPropertyDetails.daysSinceWatered = -1;
 
+        if (cropDetails.hideCropBeforeHarvestedAnimation)
+        {
+            GetComponentInChildren<SpriteRenderer>().enabled = false;
+        }
+
         GridPropertiesManager.Instance.SetGridPropertyDetails(gridPropertyDetails.gridX, gridPropertyDetails.gridY, gridPropertyDetails);
+
+        if(cropDetails.isHarvestedAnimation && animator != null)
+        {
+            StartCoroutine(ProcessHarvestActionsAfterAnimation(cropDetails, gridPropertyDetails, animator));
+        }
+        else
+        {
+            HarvestActions(cropDetails, gridPropertyDetails);
+        }
+    }
+
+    private IEnumerator ProcessHarvestActionsAfterAnimation(CropDetails cropDetails, GridPropertyDetails gridPropertyDetails, Animator animator)
+    {
+        while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Harvested"))
+        {
+            yield return null;
+        }
 
         HarvestActions(cropDetails, gridPropertyDetails);
     }
