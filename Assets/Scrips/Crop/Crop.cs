@@ -135,12 +135,12 @@ public class Crop : MonoBehaviour
                 Vector3 spawnPosition;
                 if (cropDetails.spawnCropProducedAtPlayerPosition)
                 {
-                    InventoryManager.Instance.AddItem(InventoryLocation.player, cropDetails.cropProducedItemCode[j]);
+                    InventoryManager.Instance.AddItem(InventoryLocation.player, cropDetails.cropProducedItemCode[i]);
                 }
                 else
                 {
                     spawnPosition = new Vector3(transform.position.x + Random.Range(-1f, 1f), transform.position.y + Random.Range(-1f, 1f), 0f);
-                    SceneItemsManager.Instance.InstantiateSceneItem(cropDetails.cropProducedItemCode[j], spawnPosition);
+                    SceneItemsManager.Instance.InstantiateSceneItem(cropDetails.cropProducedItemCode[i], spawnPosition);
                 }
             }
         }

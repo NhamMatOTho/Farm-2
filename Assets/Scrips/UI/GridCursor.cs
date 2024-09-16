@@ -199,6 +199,7 @@ public class GridCursor : MonoBehaviour
                 else
                     return false;
 
+            case ItemType.Chopping_tool:
             case ItemType.Collecting_tool:
                 if(gridPropertyDetails.seedItemCode != -1)
                 {
@@ -206,7 +207,7 @@ public class GridCursor : MonoBehaviour
 
                     if(cropDetails != null)
                     {
-                        if(gridPropertyDetails.growthDays >= cropDetails.totalGrowthDays)
+                        if(gridPropertyDetails.growthDays >= cropDetails.growthDays[cropDetails.growthDays.Length - 1])
                         {
                             return true;
                         }
