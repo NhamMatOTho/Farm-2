@@ -6,6 +6,9 @@ public class Crop : MonoBehaviour
 {
     private int harvestActionCount = 0;
 
+    [Tooltip("This should be populated from  transform child gameobject showing harvest effect spawn point")]
+    [SerializeField] private Transform harvestActionEffectTransform = null;
+
     [Tooltip("This should be populated from child gameobject")]
     [SerializeField] private SpriteRenderer cropHarvestedSpriteRenderer = null;
 
@@ -39,6 +42,11 @@ public class Crop : MonoBehaviour
             {
                 animator.SetTrigger("usetoolleft");
             }
+        }
+
+        if (cropDetails.isHarvestActionEffect)
+        {
+            EventHandler.CallHarvestActionEffectEvent(harvestActionEffectTransform.position, cropDetails.harvestActionEffect);
         }
 
         int requiredHarvestActions = cropDetails.RequiredHarvestActionsForTool(equippedItemDetails.ItemCode);
@@ -111,7 +119,24 @@ public class Crop : MonoBehaviour
     {
         SpawnHarvestedItem(cropDetails);
 
+        if(cropDetails.harvestedTransformItemCode > 0)
+        {
+            CreateHarvestedTransformCrop(cropDetails, gridPropertyDetails);
+        }
+
         Destroy(gameObject);
+    }
+
+    private void CreateHarvestedTransformCrop(CropDetails cropDetails, GridPropertyDetails gridPropertyDetails)
+    {
+        gridPropertyDetails.seedItemCode = cropDetails.harvestedTransformItemCode;
+        gridPropertyDetails.growthDays = 0;
+        gridPropertyDetails.daysSinceLastHarvest = -1;
+        gridPropertyDetails.daysSinceWatered = -1;
+
+        GridPropertiesManager.Instance.SetGridPropertyDetails(gridPropertyDetails.gridX, gridPropertyDetails.gridY, gridPropertyDetails);
+
+        GridPropertiesManager.Instance.DisplayPlantedCrop(gridPropertyDetails);
     }
 
     private void SpawnHarvestedItem(CropDetails cropDetails)
