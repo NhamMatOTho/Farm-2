@@ -42,7 +42,7 @@ public class UIManager : SingletonMonobehavior<UIManager>
         }
     }
 
-    private void DisablePauseMenu()
+    public void DisablePauseMenu()
     {
         pauseMenuInventoryManagement.DestroyCurrentlyDraggedItems();
 
