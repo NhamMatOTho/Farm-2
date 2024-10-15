@@ -11865,6 +11865,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1720253251}
   - component: {fileID: 1720253252}
+  - component: {fileID: 1720253253}
   m_Layer: 0
   m_Name: CharacterCustomiser
   m_TagString: Untagged
@@ -11945,6 +11946,35 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 955d0f503e2000b4a871f89358b31c8f, type: 2}
   - {fileID: 11400000, guid: bd8797e4536ba7044a0a940b4f0cd5de, type: 2}
   - {fileID: 11400000, guid: 1baf80e37606fe349b9fa9fc319e4602, type: 2}
+--- !u!114 &1720253253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720253250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c85f2cfd07288c4b927e88a2d7e6ddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maleFarmerBaseTexture: {fileID: 2800000, guid: c4e8a25a818969f4faa9e0679d36d253, type: 3}
+  femaleFarmerBaseTexture: {fileID: 2800000, guid: c4e8a25a818969f4faa9e0679d36d253, type: 3}
+  shirtsBaseTexture: {fileID: 2800000, guid: bae27de6a19db3443894c2350fec9717, type: 3}
+  hairBaseTexture: {fileID: 2800000, guid: 9982bf9edb0201b4583055eb8b80c925, type: 3}
+  hatBaseTexture: {fileID: 2800000, guid: bfd5930cb171ad448883f9eca56c9e08, type: 3}
+  adornmentsBaseTexture: {fileID: 2800000, guid: 2a21c56faaf4afd479c55eda19270d74, type: 3}
+  farmerBaseCustomised: {fileID: 2800000, guid: 73946c4cd19968e4486ca15a2e699ab6, type: 3}
+  hairCustomised: {fileID: 2800000, guid: 3fdea510f6c395642bec63c0e92feb05, type: 3}
+  hatCustomised: {fileID: 2800000, guid: 3f98ab3abed1cec40b1c2e61bead43d6, type: 3}
+  inputShirtStyleNo: 0
+  inputHairStyleNo: 1
+  inputHatStyleNo: 0
+  inputAdornmentsStyleNo: 2
+  inputSkinTypeNo: 2
+  inputSex: 0
+  inputHairColor: {r: 0.21524772, g: 0.6132076, b: 0.014462441, a: 1}
+  inputTrouserColor: {r: 1, g: 0, b: 0.020209312, a: 1}
 --- !u!1001 &1737690761
 PrefabInstance:
   m_ObjectHideFlags: 0
