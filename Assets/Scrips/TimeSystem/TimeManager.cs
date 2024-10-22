@@ -134,6 +134,12 @@ public class TimeManager : SingletonMonobehavior<TimeManager>, ISaveable
         }
     }
 
+    public TimeSpan GetGameTime()
+    {
+        TimeSpan gameTime = new TimeSpan(gameHour, gameMinute, gameSecond);
+        return gameTime;
+    }
+
     private string GetDayOfWeek()
     {
         int totalDays = (((int)gameSecond) * 30) + gameDay;

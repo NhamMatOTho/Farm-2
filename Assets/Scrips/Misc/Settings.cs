@@ -14,6 +14,7 @@ public static class Settings
 
     //Tilemap
     public const float gridCellSize = 1f;
+    public const float gridCellDiagonalSize = 1.41f;
     public static Vector2 cursorSize = Vector2.one;
 
     //Player
@@ -31,9 +32,19 @@ public static class Settings
     public const float runningSpeed = 5.333f;
     public const float walkingSpeed = 2.666f;
 
+    //npc movement
+    public static float pixelSize = 0.0625f;
+
     //inventory
     public static int playerInitialInvetoryCapacity = 24;
     public static int playerMaximumInvetoryCapacity = 48;
+
+    //npc animation paremeter
+    public static int walkUp;
+    public static int walkDown;
+    public static int walkLeft;
+    public static int walkRight;
+    public static int eventAnimation;
 
     //animation hash
     public static int xInput;
@@ -80,6 +91,13 @@ public static class Settings
 
     static Settings()
     {
+        //npc movement parameter
+        walkUp = Animator.StringToHash("walkUp");
+        walkDown = Animator.StringToHash("walkDown");
+        walkRight = Animator.StringToHash("walkRight");
+        walkLeft = Animator.StringToHash("walkLeft");
+        eventAnimation = Animator.StringToHash("eventAnimation");
+
         xInput = Animator.StringToHash("xInput");
         yInput = Animator.StringToHash("yInput");
         isWalking = Animator.StringToHash("isWalking");
