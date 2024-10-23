@@ -15,6 +15,8 @@ public static class Settings
     //Tilemap
     public const float gridCellSize = 1f;
     public const float gridCellDiagonalSize = 1.41f;
+    public const int maxGridWidth = 99999;
+    public const int maxGridHeight = 99999;
     public static Vector2 cursorSize = Vector2.one;
 
     //Player

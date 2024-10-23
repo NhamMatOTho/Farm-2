@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(AStar))]
 public class NPCManager : SingletonMonobehavior<NPCManager>
 {
+    [SerializeField] private SO_SceneRouteList so_SceneRouteList = null;
+    private Dictionary<string, SceneRoute> sceneRouteDictionary;
+
     [HideInInspector]
     public NPC[] npcArray;
     private AStar aStar;
@@ -13,6 +16,22 @@ public class NPCManager : SingletonMonobehavior<NPCManager>
     protected override void Awake()
     {
         base.Awake();
+
+        sceneRouteDictionary = new Dictionary<string, SceneRoute>();
+
+        if(so_SceneRouteList.sceneRouteList.Count > 0)
+        {
+            foreach(SceneRoute so_sceneRoute in so_SceneRouteList.sceneRouteList)
+            {
+                if(sceneRouteDictionary.ContainsKey(so_sceneRoute.fromSceneName.ToString() + so_sceneRoute.toSceneName.ToString()))
+                {
+                    Debug.Log("** Duplicate Scene Route Key Found **");
+                    continue;
+                }
+
+                sceneRouteDictionary.Add(so_sceneRoute.fromSceneName.ToString() + so_sceneRoute.toSceneName.ToString(), so_sceneRoute);
+            }
+        }
 
         aStar = GetComponent<AStar>();
         npcArray = FindObjectsOfType<NPC>();
@@ -47,6 +66,20 @@ public class NPCManager : SingletonMonobehavior<NPCManager>
             {
                 npcMovement.SetNPCInactiveInScene();
             }
+        }
+    }
+
+    public SceneRoute GetSceneRoute(string fromSceneName,  string toSceneName)
+    {
+        SceneRoute sceneRoute;
+
+        if(sceneRouteDictionary.TryGetValue(fromSceneName+toSceneName, out sceneRoute))
+        {
+            return sceneRoute;
+        }
+        else
+        {
+            return null;
         }
     }
 

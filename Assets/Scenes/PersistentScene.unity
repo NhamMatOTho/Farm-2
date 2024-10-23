@@ -9343,6 +9343,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcPath: {fileID: 1425996787}
   moveNPC: 0
+  sceneName: 0
   finishPosition: {x: 0, y: 0}
   idleDownAnimationClip: {fileID: 7400000, guid: cb83867c6252b5c4a8e8758697474f88, type: 2}
   eventAnimationClip: {fileID: 7400000, guid: cb83867c6252b5c4a8e8758697474f88, type: 2}
@@ -9388,6 +9389,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: daec3d5a569fd6b4083af566fa1c0479, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  so_SceneRouteList: {fileID: 11400000, guid: e4d165ed0151b504981e088016316801, type: 2}
   npcArray: []
 --- !u!114 &1308853761
 MonoBehaviour:
