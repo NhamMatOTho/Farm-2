@@ -7355,6 +7355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5a0cd7e4d87d2d4fb6e212b76d8b095, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentWeather: 0
 --- !u!4 &1006212445
 Transform:
   m_ObjectHideFlags: 0
@@ -9727,6 +9728,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 627610733496a2c44bdfa3f64de1857e, type: 2}
+    - target: {fileID: 474088402202321581, guid: 835c8986c9d10fc41bcd0948140681eb, type: 3}
+      propertyPath: so_NPCScheduleEventList
+      value: 
+      objectReference: {fileID: 11400000, guid: e0aab998b9fe5cb4e8d933c8d3f27c53, type: 2}
     - target: {fileID: 3206636224050080656, guid: 835c8986c9d10fc41bcd0948140681eb, type: 3}
       propertyPath: m_Size.y
       value: 2

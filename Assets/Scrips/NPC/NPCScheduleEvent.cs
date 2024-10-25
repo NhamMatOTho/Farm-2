@@ -9,7 +9,6 @@ public class NPCScheduleEvent
 {
     public int hour;
     public int minute;
-    public int second;
     public int priority;
     public int day;
     public Weather weather;
