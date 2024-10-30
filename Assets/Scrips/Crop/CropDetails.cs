@@ -21,6 +21,7 @@ public class CropDetails
     public bool isHarvestActionEffect = false;
     public bool spawnCropProducedAtPlayerPosition;
     public HarvestActionEffect harvestActionEffect;
+    public SoundName harvestSound;
 
     [ItemCodeDescription]
     public int[] harvestToolItemCode;

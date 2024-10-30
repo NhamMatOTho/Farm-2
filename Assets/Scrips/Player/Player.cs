@@ -309,6 +309,8 @@ public class Player : SingletonMonobehavior<Player>, ISaveable
             GridPropertiesManager.Instance.DisplayPlantedCrop(gridPropertyDetails);
 
             EventHandler.CallRemoveSelectedItemFromInventoryEvent();
+
+            AudioManager.Instance.PlaySound(SoundName.effectPlantingSound);
         }
     }
     private void ProcessPlayerClickInputTool(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails, Vector3Int playerDirection)
@@ -365,6 +367,7 @@ public class Player : SingletonMonobehavior<Player>, ISaveable
 
     private void BreakInPlayerDirection(GridPropertyDetails gridPropertyDetails, ItemDetails equippedItemDetails, Vector3Int playerDirection)
     {
+        AudioManager.Instance.PlaySound(SoundName.effectPickaxe);
         StartCoroutine(BreakInPlayerDirectionRoutine(gridPropertyDetails, equippedItemDetails, playerDirection));
     }
 
@@ -390,6 +393,7 @@ public class Player : SingletonMonobehavior<Player>, ISaveable
 
     private void ChopInPlayerDirection(GridPropertyDetails gridPropertyDetails, ItemDetails equippedItemDetails, Vector3Int playerDirection)
     {
+        AudioManager.Instance.PlaySound(SoundName.effectAxe);
         StartCoroutine(ChopInPlayerDirectionRountine(gridPropertyDetails, equippedItemDetails, playerDirection));
     }
 
@@ -415,6 +419,7 @@ public class Player : SingletonMonobehavior<Player>, ISaveable
 
     private void HoeGroundAtCursor(GridPropertyDetails gridPropertyDetails, Vector3Int playerDirection)
     {
+        AudioManager.Instance.PlaySound(SoundName.effectHoe);
         StartCoroutine(HoeGroundAtCursorRoutine(playerDirection, gridPropertyDetails));
     }
 
@@ -457,6 +462,7 @@ public class Player : SingletonMonobehavior<Player>, ISaveable
 
     private void WaterGroundAtCursor(GridPropertyDetails gridPropertyDetails, Vector3Int playerDirection)
     {
+        AudioManager.Instance.PlaySound(SoundName.effectWateringCan);
         StartCoroutine(WaterGroundAtCursorRoutine(playerDirection, gridPropertyDetails));
     }
 
@@ -499,6 +505,7 @@ public class Player : SingletonMonobehavior<Player>, ISaveable
 
     private void CollectInPlayerDirection(GridPropertyDetails gridPropertyDetails, ItemDetails equippedItemDetails, Vector3Int playerDirection)
     {
+        AudioManager.Instance.PlaySound(SoundName.effectBasket);
         StartCoroutine(CollectInPlayerDirectionRoutine(gridPropertyDetails, equippedItemDetails, playerDirection));
     }
 
@@ -632,6 +639,8 @@ public class Player : SingletonMonobehavior<Player>, ISaveable
 
                         //trigger reaping
                         EventHandler.CallHarvestActionEffectEvent(effectPosition, HarvestActionEffect.reaping);
+
+                        AudioManager.Instance.PlaySound(SoundName.effectScythe);
 
                         Destroy(itemArray[i].gameObject);
 
