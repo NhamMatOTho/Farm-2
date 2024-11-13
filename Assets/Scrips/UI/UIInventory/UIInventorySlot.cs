@@ -206,7 +206,7 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         }
     }
 
-    private void SetSelectedItem()
+    public void SetSelectedItem()
     {
         inventoryBar.ClearHighlightOnInventorySlots();
         isSelected = true;
@@ -237,6 +237,7 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         cursor.SelectedItemType = itemDetails.itemType;
 
         InventoryManager.Instance.SetSelectedInventoryItem(InventoryLocation.player, itemDetails.ItemCode);
+        inventoryBar.selectedItemIndex = slotNumber;
 
         if (itemDetails.canBeCarried)
         {

@@ -9,6 +9,9 @@ public class UIInventoryBar : MonoBehaviour
     [SerializeField] private UIInventorySlot[] inventorySlot = null;
     public GameObject inventoryBarDraggedItem;
     [HideInInspector] public GameObject inventoryTextBoxGameObject;
+    //int selectedItemIndex => Update(if(mouseScroll) setToNextItem(index))
+    public int selectedItemIndex = -1;
+     
 
     private RectTransform rectTransform;
 
@@ -34,6 +37,38 @@ public class UIInventoryBar : MonoBehaviour
     private void Update()
     {
         SwitchInventoryBarPosition();
+        SelectItemByScroll();
+    }
+
+    private void SelectItemByScroll()
+    {
+        if (inventorySlot.Length > 0 && selectedItemIndex > -1)
+        {
+            if(Input.mouseScrollDelta.y > 0)
+            {
+                for(int i = selectedItemIndex+1; i < inventorySlot.Length; i++)
+                {
+                    if (inventorySlot[i].itemDetails != null)
+                    {
+                        inventorySlot[i].SetSelectedItem();
+                        break;
+                    }
+                    if (i == inventorySlot.Length - 1) i = -1;
+                }
+            }
+            else if(Input.mouseScrollDelta.y < 0)
+            {
+                for (int i = selectedItemIndex -1 ; i >= 0; i--)
+                {
+                    if (inventorySlot[i].itemDetails != null)
+                    {
+                        inventorySlot[i].SetSelectedItem();
+                        break;
+                    }
+                    if (i == 0) i = inventorySlot.Length;
+                }
+            }
+        }
     }
 
     private void InventoryUpdated(InventoryLocation inventoryLocation, List<InventoryItem> inventoryList)
