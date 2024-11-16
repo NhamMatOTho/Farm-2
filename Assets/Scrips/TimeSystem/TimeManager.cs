@@ -129,8 +129,7 @@ public class TimeManager : SingletonMonobehavior<TimeManager>, ISaveable
                 EventHandler.CallAdvanceGameHourEvent(gameYear, gameSeason, gameDay, gameDayOfWeek, gameHour, gameMinute, gameSecond);
             }
             EventHandler.CallAdvanceGameMinuteEvent(gameYear, gameSeason, gameDay, gameDayOfWeek, gameHour, gameMinute, gameSecond);
-            Debug.Log("Year: " + gameYear + "   Season: " + gameSeason + "   Day: " + gameDay + "   Hour: " + gameHour + "   Minute: "
-                + gameMinute);
+            //Debug.Log("Year: " + gameYear + "   Season: " + gameSeason + "   Day: " + gameDay + "   Hour: " + gameHour + "   Minute: " + gameMinute);
         }
     }
 

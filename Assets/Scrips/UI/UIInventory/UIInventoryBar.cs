@@ -38,15 +38,19 @@ public class UIInventoryBar : MonoBehaviour
     {
         SwitchInventoryBarPosition();
         SelectItemByScroll();
+        Debug.Log(selectedItemIndex);
     }
 
     private void SelectItemByScroll()
     {
-        if (inventorySlot.Length > 0 && selectedItemIndex > -1)
+        if (inventorySlot.Length > 0)
         {
-            if(Input.mouseScrollDelta.y > 0)
+            int index = selectedItemIndex;
+            if (Input.mouseScrollDelta.y > 0)
             {
-                for(int i = selectedItemIndex+1; i < inventorySlot.Length; i++)
+                if (index == -1 && inventorySlot[0].itemDetails != null) index = -1;
+                if (selectedItemIndex == 11) index = -1;
+                for (int i = index+1; i < inventorySlot.Length; i++)
                 {
                     if (inventorySlot[i].itemDetails != null)
                     {
@@ -58,7 +62,8 @@ public class UIInventoryBar : MonoBehaviour
             }
             else if(Input.mouseScrollDelta.y < 0)
             {
-                for (int i = selectedItemIndex -1 ; i >= 0; i--)
+                if (selectedItemIndex == 0) index = 12;
+                for (int i = index -1 ; i >= 0; i--)
                 {
                     if (inventorySlot[i].itemDetails != null)
                     {
